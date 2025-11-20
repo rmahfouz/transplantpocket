@@ -824,10 +824,13 @@ export default function TransplantGuideApp() {
                     {/* Removed Checklist and Acronyms */}
                 </nav>
 
-                <div className="p-4 border-t border-slate-100">
+                <div className="p-4 border-t border-slate-100 space-y-2">
                     <div className="bg-blue-50 p-3 rounded-lg text-xs text-slate-600 flex gap-2">
                         <Info size={16} className="shrink-0 text-blue-500" />
                         <span>Data sourced from OPTN/SRTR & Standard Clinical Guidelines.</span>
+                    </div>
+                    <div className="text-center text-xs text-slate-500">
+                        Programmed by <span className="font-semibold text-slate-700">Ratib Mahfouz</span>
                     </div>
                 </div>
             </aside>
