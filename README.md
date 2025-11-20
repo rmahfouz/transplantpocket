@@ -1,6 +1,8 @@
 # Pocket Transplant Nephrology App
 
-This project has been converted to a standard React + Vite application.
+A comprehensive pocket guide for transplant nephrology fellows, covering epidemiology, surgical considerations, immunology, pharmacology, rejection management, and infectious disease protocols.
+
+**Programmed by Ratib Mahfouz**
 
 ## Prerequisites
 
@@ -22,6 +24,15 @@ Download it here: [https://nodejs.org/](https://nodejs.org/)
 
 ## Structure
 
--   `src/App.jsx`: The main application code (previously index.html).
+-   `src/App.jsx`: The main application code.
 -   `src/main.jsx`: The entry point.
 -   `index.html`: The HTML file that loads the app.
+
+## Features
+
+- **Epidemiology & Basics**: Transplant statistics, survival data, and donor types
+- **Surgical & Ischemia**: Cold and warm ischemia times, surgical complications
+- **Immunology & Allocation**: Crossmatching, risk scores (KDPI, cPRA, EPTS)
+- **Pharmacology**: Induction protocols, maintenance therapy, dose calculators
+- **Rejection**: DGF management, TCMR and ABMR treatment protocols
+- **Infectious Disease**: CMV, PJP, BK virus, and PTLD management
