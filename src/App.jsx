@@ -19,11 +19,11 @@ import {
 // --- Data & Content Constants ---
 
 const EPIDEMIOLOGY_DATA = [
-    { label: "Waitlist Candidates", value: "~90,000", sub: "Demand" },
-    { label: "Transplants/Year", value: "~25,000", sub: "Supply" },
+    { label: "Waitlist Candidates", value: "~90,000", sub: "Active (≈94k Total)" },
+    { label: "Transplants/Year", value: "~28,000", sub: "2023 SRTR Data" },
     { label: "Dialysis Mortality", value: "15-20%", sub: "Annual Risk" },
-    { label: "Tx Survival (Living)", value: "15-20 yrs", sub: "Half-Life" },
-    { label: "Tx Survival (Deceased)", value: "8-12 yrs", sub: "Half-Life" },
+    { label: "Tx Survival (Living)", value: "~15-20 yrs", sub: "Half-Life" },
+    { label: "Tx Survival (Deceased)", value: "~8-12 yrs", sub: "Half-Life" },
 ];
 
 // --- Helper Components ---
@@ -117,6 +117,32 @@ const Epidemiology = () => (
                     Transplantation offers a significant survival advantage over dialysis.
                     Preemptive transplantation (before dialysis) provides the best long-term outcomes.
                 </p>
+                
+                <div className="grid grid-cols-2 gap-4 text-sm mt-4">
+                    <div className="bg-green-50 p-3 rounded-lg border border-green-100">
+                        <div className="font-bold text-green-800 mb-2">Living Donor Survival</div>
+                        <div className="flex justify-between mb-1">
+                            <span className="text-slate-600">1-Year Graft:</span>
+                            <span className="font-bold text-green-700">~97–98%</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-slate-600">5-Year Graft:</span>
+                            <span className="font-bold text-green-700">~88–92%</span>
+                        </div>
+                    </div>
+                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                        <div className="font-bold text-blue-800 mb-2">Deceased Donor Survival</div>
+                        <div className="flex justify-between mb-1">
+                            <span className="text-slate-600">1-Year Graft:</span>
+                            <span className="font-bold text-blue-700">~93–95%</span>
+                        </div>
+                        <div className="flex justify-between">
+                            <span className="text-slate-600">5-Year Graft:</span>
+                            <span className="font-bold text-blue-700">~78–83%</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="relative h-64 bg-slate-50 rounded-lg border border-slate-100 p-4 pt-8 pb-8 ml-4 mt-2">
                     {/* Y Axis Label */}
                     <div
@@ -134,7 +160,7 @@ const Epidemiology = () => (
                             </div>
                         </div>
                         <div
-                            className="w-16 bg-blue-400 rounded-t-lg h-[65%] relative group mx-1 shadow-sm transition-all hover:h-[67%]">
+                            className="w-16 bg-blue-400 rounded-t-lg h-[75%] relative group mx-1 shadow-sm transition-all hover:h-[77%]">
                             <div className="absolute -top-6 left-0 right-0 text-center text-xs font-bold text-blue-600">Deceased
                             </div>
                             <div className="absolute inset-0 flex items-end justify-center pb-2 text-white text-xs font-bold">~75%
@@ -358,6 +384,14 @@ const Pharmacology = () => {
     const [irTotalDose, setIrTotalDose] = useState('');
     const [envarsusDose, setEnvarsusDose] = useState(0);
 
+    // MMF Converter
+    const [cellceptDose, setCellceptDose] = useState('');
+    const [myforticDose, setMyforticDose] = useState(0);
+
+    useEffect(() => {
+        setSlDose(poDose ? parseFloat(poDose) / 2 : 0);
+    }, [poDose]);
+
     useEffect(() => {
         setSlDose(poDose ? parseFloat(poDose) / 2 : 0);
     }, [poDose]);
@@ -366,6 +400,14 @@ const Pharmacology = () => {
         // Envarsus conversion is typically 80% of Total Daily Dose of IR
         setEnvarsusDose(irTotalDose ? (parseFloat(irTotalDose) * 0.8).toFixed(1) : 0);
     }, [irTotalDose]);
+
+    useEffect(() => {
+        // CellCept 1000 ~= Myfortic 720
+        // Factor approx 0.72
+        // PDF says: 1000~720, 750~540, 500~360, 250~180
+        // It's exactly 0.72 conversion
+        setMyforticDose(cellceptDose ? (parseFloat(cellceptDose) * 0.72).toFixed(0) : 0);
+    }, [cellceptDose]);
 
     return (
         <div className="space-y-6">
@@ -404,7 +446,7 @@ const Pharmacology = () => {
                                 <strong>Criteria:</strong> cPRA &gt; 20%, Re-transplant, DSA+, DGF anticipated, African American.
                             </div>
                             <ul className="list-disc list-inside text-slate-700 space-y-1">
-                                <li><strong>Induction:</strong> Thymoglobulin (3.0 - 6.0 mg/kg total).</li>
+                                <li><strong>Induction:</strong> Thymoglobulin (3.0 - 4.5 mg/kg total).</li>
                                 <li><strong>Tacrolimus:</strong> Start POD 1 or when renal function allows.</li>
                                 <li><strong>MMF:</strong> 500-750 mg PO BID (Higher in AA recipients).</li>
                                 <li><strong>Steroids:</strong> Standard slow taper.</li>
@@ -449,6 +491,14 @@ const Pharmacology = () => {
                                     <strong>Side Effects:</strong> Very well tolerated. Rare hypersensitivity. No Cytokine release.
                                 </div>
                             </div>
+                            <div className="border-l-4 border-slate-500 pl-4 py-2 md:col-span-2">
+                                <h3 className="font-bold text-lg text-slate-700">Alemtuzumab (Campath)</h3>
+                                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Lymphocyte Depleting (Humanized Monoclonal)</div>
+                                <p className="text-xs text-slate-600 mb-2">Anti-CD52. Profound and prolonged depletion of T-cells, B-cells, and monocytes. Not routinely used in CCF.</p>
+                                <div className="bg-slate-100 p-2 rounded text-xs text-slate-800">
+                                    <strong>Side Effects:</strong> Infusion reactions, prolonged neutropenia/anemia/thrombocytopenia, secondary autoimmune conditions (ITP, thyroid), high risk for opportunistic infections.
+                                </div>
+                            </div>
                         </div>
                     </Card>
                 </div>
@@ -478,15 +528,34 @@ const Pharmacology = () => {
                         </div>
                     </Card>
 
+                    <Card title="mTOR Inhibitors">
+                        <div className="text-sm space-y-2">
+                             <h4 className="font-bold text-teal-800 text-base mb-1">Everolimus (Zortress)</h4>
+                             <p className="text-xs text-slate-600 mb-2">Inhibits mTOR; blocks IL-2-mediated T-cell proliferation.</p>
+                             
+                             <div className="grid grid-cols-1 gap-2">
+                                <div className="bg-teal-50 p-2 rounded text-xs text-teal-800 border border-teal-100">
+                                    <strong>Side Effects:</strong> Hyperlipidemia, proteinuria, cytopenias, impaired wound healing, edema.
+                                </div>
+                                <ul className="list-disc list-inside text-slate-600 text-xs">
+                                    <li>Often combined with reduced-dose tacrolimus.</li>
+                                    <li>May lower risk of post-transplant malignancy (esp. SCC).</li>
+                                    <li>Monitoring: Trough level.</li>
+                                </ul>
+                             </div>
+                        </div>
+                    </Card>
+
                     <Card title="Antimetabolites & Steroids">
                         <div className="space-y-4 text-sm">
                             <div>
                                 <h4 className="font-bold text-slate-800 mb-1">Mycophenolate (CellCept / Myfortic)</h4>
                                 <p className="text-xs mb-1">Inhibits purine synthesis (IMPDH).</p>
-                                <div className="bg-orange-50 p-2 rounded text-xs text-orange-800 border border-orange-100">
+                                <div className="bg-orange-50 p-2 rounded text-xs text-orange-800 border border-orange-100 mb-2">
                                     <strong>Side Effects:</strong> GI Toxicity (Diarrhea/Nausea), Leukopenia, Anemia. <span
                                         className="font-bold">Teratogenic.</span>
                                 </div>
+                                <p className="text-xs text-slate-500 italic">Myfortic preferred in patients with significant GI toxicity.</p>
                             </div>
                             <div className="border-t pt-2">
                                 <h4 className="font-bold text-slate-800 mb-1">Prednisone</h4>
@@ -559,6 +628,33 @@ const Pharmacology = () => {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* CellCept to Myfortic */}
+                            <div className="border-t pt-4">
+                                <div className="flex items-center gap-2 font-bold text-slate-700 mb-2">
+                                    <Calculator size={16} /> CellCept to Myfortic
+                                </div>
+                                <p className="text-xs text-slate-500 mb-2">Approximation (Factor ~0.72). 1000mg ≈ 720mg.</p>
+                                <div className="flex items-center gap-4">
+                                    <div className="w-1/2">
+                                        <label className="text-xs font-bold text-slate-500 block mb-1">CellCept (mg)</label>
+                                        <input type="number" value={cellceptDose} onChange={(e) => setCellceptDose(e.target.value)}
+                                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
+                                            placeholder="e.g. 1000"
+                                        />
+                                    </div>
+                                    <div className="text-slate-300">
+                                        <ArrowRight />
+                                    </div>
+                                    <div className="w-1/2">
+                                        <label className="text-xs font-bold text-slate-500 block mb-1">Myfortic (mg)</label>
+                                        <div
+                                            className="w-full p-2 bg-slate-100 border border-slate-200 rounded font-bold text-orange-700">
+                                            {myforticDose} mg
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </Card>
                 </div>
@@ -606,28 +702,64 @@ const Rejection = () => (
             <Card title={<div className="flex items-center">TCMR (T-Cell)
                 <SourceTip source="CCF Protocol: Rejection" />
             </div>} className="border-l-4 border-l-orange-400">
-                <div className="space-y-2 text-sm">
-                    <p className="text-xs text-slate-500">Tubulitis, Interstitial Inflammation</p>
-                    <div className="font-bold text-slate-700 mt-2">Treatment Protocol:</div>
-                    <ul className="list-disc list-inside text-slate-600 text-xs space-y-1">
-                        <li><strong>Borderline/IA:</strong> Pulse Solumedrol 500mg x 3.</li>
-                        <li><strong>Severe/Vascular (II/III):</strong> Thymoglobulin 1.5 mg/kg/day (Target 4-7 mg/kg total).</li>
-                        <li>Followed by Oral Steroid Taper.</li>
-                    </ul>
+                <div className="space-y-4 text-sm">
+                    <p className="text-xs text-slate-500">Tubulitis (t), Interstitial Inflammation (i)</p>
+                    
+                    <div className="space-y-2">
+                        <h4 className="font-bold text-slate-700 text-xs uppercase tracking-wide">Categories</h4>
+                        <ul className="text-xs text-slate-600 space-y-1">
+                            <li><strong>Borderline:</strong> i1 (10-25%) + mild tubulitis (t1-t3).</li>
+                            <li><strong>Grade IA:</strong> i2/i3 (&gt;25%) + t2 (moderate).</li>
+                            <li><strong>Grade IB:</strong> i2/i3 (&gt;25%) + t3 (severe).</li>
+                            <li><strong>Grade IIA/B:</strong> Vascular (v1/v2). Intimal arteritis.</li>
+                            <li><strong>Grade III:</strong> Transmural arteritis / necrosis (v3).</li>
+                            <li><strong>Chronic Active:</strong> Inflammation in fibrosis areas (i-IFTA).</li>
+                        </ul>
+                    </div>
+
+                    <div className="space-y-2 border-t border-slate-100 pt-2">
+                         <h4 className="font-bold text-slate-700 text-xs uppercase tracking-wide">Treatment</h4>
+                        <ul className="list-disc list-inside text-slate-600 text-xs space-y-1">
+                            <li><strong>Borderline/IA:</strong> Pulse Solumedrol 500mg x 3.</li>
+                            <li><strong>IB/II/III:</strong> Thymoglobulin 1.5 mg/kg/day (Target 4-7 mg/kg total).</li>
+                            <li>Followed by Oral Steroid Taper.</li>
+                        </ul>
+                    </div>
                 </div>
             </Card>
 
             <Card title={<div className="flex items-center">ABMR (Antibody)
                 <SourceTip source="CCF Protocol: Rejection" />
             </div>} className="border-l-4 border-l-red-400">
-                <div className="space-y-2 text-sm">
-                    <p className="text-xs text-slate-500">DSA, C4d+, Microvascular Inflammation</p>
-                    <div className="font-bold text-slate-700 mt-2">Treatment Protocol:</div>
-                    <ul className="list-disc list-inside text-slate-600 text-xs space-y-1">
-                        <li><strong>Plasmapheresis:</strong> x 6 sessions (3/week x 2 weeks).</li>
-                        <li><strong>IVIG:</strong> 0.5 g/kg after each Plex (Total 2 g/kg).</li>
-                        <li><strong>+/- Rituximab:</strong> Anti-CD20.</li>
-                    </ul>
+                <div className="space-y-4 text-sm">
+                    <p className="text-xs text-slate-500">DSA, C4d+, Microvascular Inflammation (MVI)</p>
+                    
+                    <div className="space-y-2">
+                        <h4 className="font-bold text-slate-700 text-xs uppercase tracking-wide">3 Diagnostic Pillars</h4>
+                        <ol className="list-decimal list-inside text-xs text-slate-600 space-y-1">
+                            <li><strong>Morphologic:</strong> MVI (g&gt;0, ptc&gt;0), Arteritis, TMA, ATI.</li>
+                            <li><strong>Antibody Interaction:</strong> C4d+, MVI score &ge;2, Molecular transcripts.</li>
+                            <li><strong>Serologic:</strong> DSA Positive.</li>
+                        </ol>
+                    </div>
+
+                    <div className="space-y-2 border-t border-slate-100 pt-2">
+                        <h4 className="font-bold text-slate-700 text-xs uppercase tracking-wide">Banff 2022 Updates</h4>
+                        <ul className="text-xs text-slate-600 space-y-1">
+                            <li><strong>MVI, DSA-neg, C4d-neg:</strong> Non-HLA/NK cell activation.</li>
+                            <li><strong>Probable ABMR:</strong> DSA+ with some histology but below threshold.</li>
+                            <li><strong>Chronic Active (caABMR):</strong> Double contours (cg&gt;0).</li>
+                        </ul>
+                    </div>
+
+                    <div className="space-y-2 border-t border-slate-100 pt-2">
+                        <h4 className="font-bold text-slate-700 text-xs uppercase tracking-wide">Treatment</h4>
+                        <ul className="list-disc list-inside text-slate-600 text-xs space-y-1">
+                            <li><strong>Plasmapheresis:</strong> x 6 sessions (3/week x 2 weeks).</li>
+                            <li><strong>IVIG:</strong> 0.5 g/kg after each Plex (Total 2 g/kg).</li>
+                            <li><strong>+/- Rituximab:</strong> Anti-CD20.</li>
+                        </ul>
+                    </div>
                 </div>
             </Card>
         </div>
@@ -654,11 +786,50 @@ const Infections = () => (
 
                 <div className="p-3 bg-yellow-50 border border-yellow-100 rounded-lg">
                     <div className="flex justify-between items-start mb-1">
-                        <h4 className="font-bold text-yellow-800">Intermediate (R+)</h4>
+                        <h4 className="font-bold text-yellow-800">Intermediate (R+, D- or D+)</h4>
                         <span className="text-[10px] bg-white border border-yellow-200 px-2 rounded">Reactivation</span>
                     </div>
                     <p className="text-slate-700 text-xs"><strong>Protocol:</strong> Valganciclovir 900mg daily x <strong>3
                         months</strong>.</p>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr className="bg-slate-100 text-slate-700">
+                                <th className="p-2 border border-slate-200">CrCl</th>
+                                <th className="p-2 border border-slate-200">Induction/Tx</th>
+                                <th className="p-2 border border-slate-200">Prophylaxis</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-slate-600">
+                            <tr>
+                                <td className="p-2 border border-slate-200">&ge;60</td>
+                                <td className="p-2 border border-slate-200">900mg BID</td>
+                                <td className="p-2 border border-slate-200">900mg Daily</td>
+                            </tr>
+                            <tr>
+                                <td className="p-2 border border-slate-200">40-&lt;60</td>
+                                <td className="p-2 border border-slate-200">450mg BID</td>
+                                <td className="p-2 border border-slate-200">450mg Daily</td>
+                            </tr>
+                            <tr>
+                                <td className="p-2 border border-slate-200">25-&lt;40</td>
+                                <td className="p-2 border border-slate-200">450mg Daily</td>
+                                <td className="p-2 border border-slate-200">450mg q2 Days</td>
+                            </tr>
+                            <tr>
+                                <td className="p-2 border border-slate-200">10-&lt;25</td>
+                                <td className="p-2 border border-slate-200">450mg q2 Days</td>
+                                <td className="p-2 border border-slate-200">450mg 2x/Week</td>
+                            </tr>
+                            <tr>
+                                <td className="p-2 border border-slate-200">&lt;10</td>
+                                <td className="p-2 border border-slate-200">See Protocol</td>
+                                <td className="p-2 border border-slate-200">See Protocol</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <div className="mt-2 pt-2 border-t border-slate-100">
@@ -721,6 +892,7 @@ const Infections = () => (
                         <li>1 SS Daily OR 1 DS 3x/week.</li>
                         <li><strong>Duration:</strong> Life of allograft (or min 18 months).</li>
                         <li><strong>Sulfa Allergy:</strong> Dapsone 100mg daily or Atovaquone or Pentamidine.</li>
+                        <li className="italic text-slate-500">Note: For Pentamidine, order "Pentamidine + Albuterol".</li>
                     </ul>
                 </div>
             </Card>

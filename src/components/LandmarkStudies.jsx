@@ -74,6 +74,20 @@ const LANDMARK_STUDIES = [
         link: "https://pubmed.ncbi.nlm.nih.gov/30893539/"
     },
     {
+        id: "thinker-2017",
+        shortTitle: "THINKER Trial",
+        citation: "Goldberg et al., NEJM 2017",
+        year: 2017,
+        category: "Special Populations",
+        pico: {
+            population: "10 HCV-negative kidney transplant candidates",
+            intervention: "Kidneys from HCV-viremic (genotype 1) deceased donors + elbasvir–grazoprevir",
+            comparison: "Standard of care (avoiding HCV-positive donors)",
+            outcome: "100% cure rate (SVR12), excellent early graft function, proving feasibility of HCV-viremic organs."
+        },
+        link: "https://pubmed.ncbi.nlm.nih.gov/28398835/"
+    },
+    {
         id: "transform-2018",
         shortTitle: "TRANSFORM Study",
         citation: "Pascual et al., J Am Soc Nephrol 2018",
@@ -245,8 +259,8 @@ const LandmarkStudies = () => {
                         key={cat}
                         onClick={() => setSelectedCategory(cat)}
                         className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${selectedCategory === cat
-                                ? 'bg-blue-600 text-white shadow-md'
-                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-blue-600 text-white shadow-md'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                             }`}
                     >
                         {cat}
