@@ -1000,13 +1000,16 @@ export default function TransplantGuideApp() {
             <aside className={` fixed md:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-slate-200 transform
                 transition-transform duration-200 ease-in-out flex flex-col ${sidebarOpen ? "translate-x-0"
                     : "-translate-x-full md:translate-x-0"} `}>
-                <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                    <div className="flex items-center">
-                        <img src="/logo.svg" alt="Tx Nephrology Fellow's Pocket Guide" className="h-10 w-auto" />
+                <div className="p-6 border-b border-slate-100 flex justify-center items-center relative">
+                    <div className="flex items-center justify-center w-full">
+                        {/* You can adjust the size of the logo by changing the "h-24" Tailwind class below (e.g. h-16, h-20, h-32) */}
+                        <img src="/logo.svg" alt="Tx Nephrology Fellow's Pocket Guide" className="h-24 w-auto" />
                     </div>
-                    {isMobile && <button onClick={() => setSidebarOpen(false)}>
-                        <X size={24} className="text-slate-400" />
-                    </button>}
+                    {isMobile && (
+                        <button onClick={() => setSidebarOpen(false)} className="absolute right-4 top-1/2 -translate-y-1/2">
+                            <X size={24} className="text-slate-400" />
+                        </button>
+                    )}
                 </div>
 
                 <nav className="flex-1 overflow-y-auto p-4 space-y-2">
