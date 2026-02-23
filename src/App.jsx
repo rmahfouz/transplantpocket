@@ -1001,9 +1001,8 @@ export default function TransplantGuideApp() {
                 transition-transform duration-200 ease-in-out flex flex-col ${sidebarOpen ? "translate-x-0"
                     : "-translate-x-full md:translate-x-0"} `}>
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                    <div>
-                        <h1 className="font-bold text-xl text-blue-800">Tx Nephrology</h1>
-                        <p className="text-xs text-slate-500">Fellow's Pocket Guide</p>
+                    <div className="flex items-center">
+                        <img src="/logo.svg" alt="Tx Nephrology Fellow's Pocket Guide" className="h-10 w-auto" />
                     </div>
                     {isMobile && <button onClick={() => setSidebarOpen(false)}>
                         <X size={24} className="text-slate-400" />
