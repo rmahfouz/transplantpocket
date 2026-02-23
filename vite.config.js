@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
     } else {
         plugins.push(VitePWA({
             registerType: 'autoUpdate',
-            includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+            includeAssets: ['logo.svg', 'apple-touch-icon.png'],
             manifest: {
                 name: 'Transplant Nephrology Pocket',
                 short_name: 'Tx Nephrology',
