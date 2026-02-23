@@ -117,7 +117,7 @@ const Epidemiology = () => (
                     Transplantation offers a significant survival advantage over dialysis.
                     Preemptive transplantation (before dialysis) provides the best long-term outcomes.
                 </p>
-                
+
                 <div className="grid grid-cols-2 gap-4 text-sm mt-4">
                     <div className="bg-green-50 p-3 rounded-lg border border-green-100">
                         <div className="font-bold text-green-800 mb-2">Living Donor Survival</div>
@@ -530,10 +530,10 @@ const Pharmacology = () => {
 
                     <Card title="mTOR Inhibitors">
                         <div className="text-sm space-y-2">
-                             <h4 className="font-bold text-teal-800 text-base mb-1">Everolimus (Zortress)</h4>
-                             <p className="text-xs text-slate-600 mb-2">Inhibits mTOR; blocks IL-2-mediated T-cell proliferation.</p>
-                             
-                             <div className="grid grid-cols-1 gap-2">
+                            <h4 className="font-bold text-teal-800 text-base mb-1">Everolimus (Zortress)</h4>
+                            <p className="text-xs text-slate-600 mb-2">Inhibits mTOR; blocks IL-2-mediated T-cell proliferation.</p>
+
+                            <div className="grid grid-cols-1 gap-2">
                                 <div className="bg-teal-50 p-2 rounded text-xs text-teal-800 border border-teal-100">
                                     <strong>Side Effects:</strong> Hyperlipidemia, proteinuria, cytopenias, impaired wound healing, edema.
                                 </div>
@@ -542,7 +542,7 @@ const Pharmacology = () => {
                                     <li>May lower risk of post-transplant malignancy (esp. SCC).</li>
                                     <li>Monitoring: Trough level.</li>
                                 </ul>
-                             </div>
+                            </div>
                         </div>
                     </Card>
 
@@ -704,7 +704,7 @@ const Rejection = () => (
             </div>} className="border-l-4 border-l-orange-400">
                 <div className="space-y-4 text-sm">
                     <p className="text-xs text-slate-500">Tubulitis (t), Interstitial Inflammation (i)</p>
-                    
+
                     <div className="space-y-2">
                         <h4 className="font-bold text-slate-700 text-xs uppercase tracking-wide">Categories</h4>
                         <ul className="text-xs text-slate-600 space-y-1">
@@ -718,7 +718,7 @@ const Rejection = () => (
                     </div>
 
                     <div className="space-y-2 border-t border-slate-100 pt-2">
-                         <h4 className="font-bold text-slate-700 text-xs uppercase tracking-wide">Treatment</h4>
+                        <h4 className="font-bold text-slate-700 text-xs uppercase tracking-wide">Treatment</h4>
                         <ul className="list-disc list-inside text-slate-600 text-xs space-y-1">
                             <li><strong>Borderline/IA:</strong> Pulse Solumedrol 500mg x 3.</li>
                             <li><strong>IB/II/III:</strong> Thymoglobulin 1.5 mg/kg/day (Target 4-7 mg/kg total).</li>
@@ -733,7 +733,7 @@ const Rejection = () => (
             </div>} className="border-l-4 border-l-red-400">
                 <div className="space-y-4 text-sm">
                     <p className="text-xs text-slate-500">DSA, C4d+, Microvascular Inflammation (MVI)</p>
-                    
+
                     <div className="space-y-2">
                         <h4 className="font-bold text-slate-700 text-xs uppercase tracking-wide">3 Diagnostic Pillars</h4>
                         <ol className="list-decimal list-inside text-xs text-slate-600 space-y-1">
@@ -825,8 +825,9 @@ const Infections = () => (
                             </tr>
                             <tr>
                                 <td className="p-2 border border-slate-200">&lt;10</td>
-                                <td className="p-2 border border-slate-200">See Protocol</td>
-                                <td className="p-2 border border-slate-200">See Protocol</td>
+                                <td className="p-2 border border-slate-200 text-[10px]" colSpan="2">
+                                    Not recommended; consider 100mg oral solution 3x/wk or 450mg tablet 2x/wk.
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -938,6 +939,7 @@ export default function TransplantGuideApp() {
     const [activeSection, setActiveSection] = useState('epidemiology');
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(true);
+    const [showAck, setShowAck] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
@@ -965,6 +967,29 @@ export default function TransplantGuideApp() {
 
     return (
         <div className="flex h-screen bg-slate-50 font-sans text-slate-800 overflow-hidden">
+            {/* Acknowledgment Modal */}
+            {showAck && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setShowAck(false)}>
+                    <div className="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full relative border border-slate-100" onClick={e => e.stopPropagation()}>
+                        <button onClick={() => setShowAck(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                            <X size={20} />
+                        </button>
+                        <h3 className="font-bold text-lg text-blue-800 mb-4 border-b pb-2">Acknowledgments</h3>
+                        <p className="text-sm text-slate-600 mb-4">
+                            Special thanks to the following contributors for their invaluable input and review:
+                        </p>
+                        <ul className="text-sm text-slate-700 font-medium space-y-3 mb-6">
+                            <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div> Ratib Mahfouz, M.D.</li>
+                            <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div> Itunu Owoyemi, MBBS</li>
+                            <li className="flex items-center gap-3"><div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div> Mathew Duck, RN, BSN</li>
+                        </ul>
+                        <button onClick={() => setShowAck(false)} className="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Sidebar Backdrop for Mobile */}
             {isMobile && sidebarOpen && (
                 <div className="fixed inset-0 bg-black/50 z-20" onClick={() => setSidebarOpen(false)}
@@ -1001,8 +1026,13 @@ export default function TransplantGuideApp() {
                         <Info size={16} className="shrink-0 text-blue-500" />
                         <span>Data sourced from OPTN/SRTR & Standard Clinical Guidelines.</span>
                     </div>
-                    <div className="text-center text-xs text-slate-500">
-                        Programmed by <span className="font-semibold text-slate-700">Ratib Mahfouz</span>
+                    <div className="text-center text-xs text-slate-500 mt-2 mb-1">
+                        <button onClick={() => setShowAck(true)} className="text-blue-600 hover:text-blue-800 font-semibold transition-colors">
+                            Acknowledgments
+                        </button>
+                    </div>
+                    <div className="text-center text-[10px] text-slate-400">
+                        Programmed by <span className="font-semibold text-slate-600">Ratib Mahfouz</span>
                     </div>
                 </div>
             </aside>
