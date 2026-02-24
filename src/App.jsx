@@ -417,7 +417,7 @@ const Pharmacology = () => {
                 <TabButton active={tab === 'protocols'} onClick={() => setTab('protocols')} label="Clinical Protocols" />
                 <TabButton active={tab === 'induction'} onClick={() => setTab('induction')} label="Induction Agents" />
                 <TabButton active={tab === 'maintenance'} onClick={() => setTab('maintenance')} label="Maintenance" />
-                <TabButton active={tab === 'calc'} onClick={() => setTab('calc')} label="Calculators" />
+
             </div>
 
             {tab === 'protocols' && (
@@ -933,6 +933,188 @@ const Infections = () => (
     </div>
 );
 
+const Calculators = () => {
+    // Tacrolimus PO to SL
+    const [poDose, setPoDose] = useState('');
+    const [slDose, setSlDose] = useState('');
+
+    // Envarsus calc
+    const [irTotalDose, setIrTotalDose] = useState('');
+    const [envarsusDose, setEnvarsusDose] = useState('');
+
+    // MMF Converter
+    const [cellceptDose, setCellceptDose] = useState('');
+    const [myforticDose, setMyforticDose] = useState('');
+
+    // Valcyte Dosing
+    const [crcl, setCrcl] = useState('');
+    const [valcyteDosing, setValcyteDosing] = useState({ induction: '', prophylaxis: '', warning: false });
+
+    const handlePoChange = (val) => {
+        setPoDose(val);
+        setSlDose(val ? (parseFloat(val) / 2).toString() : '');
+    };
+    const handleSlChange = (val) => {
+        setSlDose(val);
+        setPoDose(val ? (parseFloat(val) * 2).toString() : '');
+    };
+
+    const handleIrChange = (val) => {
+        setIrTotalDose(val);
+        setEnvarsusDose(val ? (parseFloat(val) * 0.8).toFixed(1) : '');
+    };
+    const handleEnvarsusChange = (val) => {
+        setEnvarsusDose(val);
+        setIrTotalDose(val ? (parseFloat(val) / 0.8).toFixed(1) : '');
+    };
+
+    const handleCellceptChange = (val) => {
+        setCellceptDose(val);
+        setMyforticDose(val ? (parseFloat(val) * 0.72).toFixed(0) : '');
+    };
+    const handleMyforticChange = (val) => {
+        setMyforticDose(val);
+        setCellceptDose(val ? (parseFloat(val) / 0.72).toFixed(0) : '');
+    };
+
+    useEffect(() => {
+        if (!crcl || isNaN(crcl)) {
+            setValcyteDosing({ induction: '', prophylaxis: '', warning: false });
+            return;
+        }
+        const clearance = parseFloat(crcl);
+        if (clearance >= 60) {
+            setValcyteDosing({ induction: '900mg BID', prophylaxis: '900mg Daily', warning: false });
+        } else if (clearance >= 40) {
+            setValcyteDosing({ induction: '450mg BID', prophylaxis: '450mg Daily', warning: false });
+        } else if (clearance >= 25) {
+            setValcyteDosing({ induction: '450mg Daily', prophylaxis: '450mg q2 Days', warning: false });
+        } else if (clearance >= 10) {
+            setValcyteDosing({ induction: '450mg q2 Days', prophylaxis: '450mg 2x/Week', warning: false });
+        } else {
+            setValcyteDosing({
+                induction: 'Not recommended',
+                prophylaxis: 'Not recommended',
+                warning: true,
+                warningText: 'Consider 100mg oral solution 3x/wk or 450mg tablet 2x/wk.'
+            });
+        }
+    }, [crcl]);
+
+    return (
+        <div className="space-y-6">
+            <SectionHeader title="Calculators" icon={Calculator} subtitle="Dosing & Conversions" />
+
+            <div className="grid md:grid-cols-2 gap-4">
+                {/* Valcyte Dosing Section */}
+                <Card title="Valcyte (Valganciclovir) Dosing" className="h-full border-l-4 border-l-blue-400">
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-1">
+                                CrCl (mL/min)
+                            </label>
+                            <input
+                                type="number"
+                                value={crcl}
+                                onChange={(e) => setCrcl(e.target.value)}
+                                className="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                                placeholder="Enter CrCl..."
+                            />
+                        </div>
+
+                        {valcyteDosing.induction && (
+                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                                <div className="flex justify-between items-center mb-2 pb-2 border-b border-blue-100">
+                                    <span className="text-sm font-bold text-slate-700">Induction / Tx:</span>
+                                    <span className={`font-bold ${valcyteDosing.warning ? 'text-red-600 text-xs' : 'text-blue-700'}`}>
+                                        {valcyteDosing.induction}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm font-bold text-slate-700">Prophylaxis:</span>
+                                    <span className={`font-bold ${valcyteDosing.warning ? 'text-red-600 text-xs' : 'text-blue-700'}`}>
+                                        {valcyteDosing.prophylaxis}
+                                    </span>
+                                </div>
+                                {valcyteDosing.warning && (
+                                    <div className="mt-3 pt-2 border-t border-red-100 text-[11px] text-red-600 font-medium leading-tight">
+                                        {valcyteDosing.warningText}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </Card>
+
+                {/* Tacrolimus Section */}
+                <Card title="Tacrolimus: PO to Sublingual">
+                    <div className="space-y-4">
+                        <div className="flex gap-4 items-center">
+                            <div className="flex-1">
+                                <label className="block text-xs font-semibold text-slate-500 mb-1">PO Dose (mg)</label>
+                                <input type="number" value={poDose} onChange={(e) => handlePoChange(e.target.value)}
+                                    className="w-full p-2 border border-slate-200 rounded text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                                    placeholder="e.g. 2" />
+                            </div>
+                            <ArrowRight className="text-slate-300 shrink-0 mt-5" />
+                            <div className="flex-1">
+                                <label className="block text-xs font-semibold text-slate-500 mb-1">SL Dose (mg)</label>
+                                <input type="number" value={slDose} onChange={(e) => handleSlChange(e.target.value)}
+                                    className="w-full p-2 border border-slate-200 rounded text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                                    placeholder="e.g. 1" />
+                            </div>
+                        </div>
+                        <p className="text-xs text-slate-500 italic">Conversion is typically 1:0.5 (SL dose is half of PO dose due to bypass of first-pass metabolism).</p>
+                    </div>
+                </Card>
+
+                {/* Envarsus Section */}
+                <Card title="Tacrolimus: IR to Envarsus XR">
+                    <div className="space-y-4">
+                        <div className="flex gap-4 items-center">
+                            <div className="flex-1">
+                                <label className="block text-xs font-semibold text-slate-500 mb-1">Total Daily IR Dose</label>
+                                <input type="number" value={irTotalDose} onChange={(e) => handleIrChange(e.target.value)}
+                                    className="w-full p-2 border border-slate-200 rounded text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                                    placeholder="e.g. 4" />
+                            </div>
+                            <ArrowRight className="text-slate-300 shrink-0 mt-5" />
+                            <div className="flex-1">
+                                <label className="block text-xs font-semibold text-slate-500 mb-1">Daily Envarsus</label>
+                                <input type="number" value={envarsusDose} onChange={(e) => handleEnvarsusChange(e.target.value)}
+                                    className="w-full p-2 border border-slate-200 rounded text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                                    placeholder="e.g. 3.2" />
+                            </div>
+                        </div>
+                        <p className="text-xs text-slate-500 italic">Conversion factor: 0.8 x Total Daily Dose of IR Tacrolimus.</p>
+                    </div>
+                </Card>
+
+                {/* MMF Section */}
+                <Card title="MMF (CellCept) to MPA (Myfortic)">
+                    <div className="space-y-4">
+                        <div className="flex gap-4 items-center">
+                            <div className="flex-1">
+                                <label className="block text-xs font-semibold text-slate-500 mb-1">CellCept (mg)</label>
+                                <input type="number" step="250" value={cellceptDose} onChange={(e) => handleCellceptChange(e.target.value)}
+                                    className="w-full p-2 border border-slate-200 rounded text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                                    placeholder="e.g. 1000" />
+                            </div>
+                            <ArrowRight className="text-slate-300 shrink-0 mt-5" />
+                            <div className="flex-1">
+                                <label className="block text-xs font-semibold text-slate-500 mb-1">Myfortic (mg)</label>
+                                <input type="number" step="180" value={myforticDose} onChange={(e) => handleMyforticChange(e.target.value)}
+                                    className="w-full p-2 border border-slate-200 rounded text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                                    placeholder="e.g. 720" />
+                            </div>
+                        </div>
+                    </div>
+                </Card>
+            </div>
+        </div>
+    );
+};
+
 // --- Main App Component ---
 
 export default function TransplantGuideApp() {
@@ -1020,6 +1202,7 @@ export default function TransplantGuideApp() {
                     <NavItem id="rejection" label="Rejection" icon={AlertTriangle} />
                     <NavItem id="infections" label="Infections" icon={Thermometer} />
                     <NavItem id="studies" label="Studies" icon={BookOpen} />
+                    <NavItem id="calculators" label="Calculators" icon={Calculator} />
                     {/* Removed Checklist and Acronyms */}
                 </nav>
 
@@ -1041,7 +1224,6 @@ export default function TransplantGuideApp() {
 
             {/* Main Content */}
             <main className="flex-1 flex flex-col h-full overflow-hidden w-full">
-                {/* Mobile Header */}
                 <header className="bg-white border-b border-slate-200 p-4 flex items-center gap-4 md:hidden shrink-0">
                     <button onClick={() => setSidebarOpen(true)} className="p-1 rounded hover:bg-slate-100">
                         <Menu size={24} className="text-slate-600" />
@@ -1065,6 +1247,8 @@ export default function TransplantGuideApp() {
                         <Infections />}
                     {activeSection === 'studies' &&
                         <LandmarkStudies />}
+                    {activeSection === 'calculators' &&
+                        <Calculators />}
 
                     <div className="h-12" /> {/* Spacer */}
                 </div>
